@@ -12,7 +12,7 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
-    val userService = configureDatabases()
+    val schemas = configureDatabases()
     val tokenConfig = TokenConfig(
         issuer = environment.config.property("jwt.issuer").getString(),
         audience = environment.config.property("jwt.audience").getString(),
@@ -29,6 +29,6 @@ fun Application.module() {
         hashingService = hashingService,
         tokenConfig = tokenConfig,
         tokenService = tokenService,
-        authRepository = AuthRepositoryImpl(userService)
+        authRepository = AuthRepositoryImpl(schemas.userService)
     )
 }
