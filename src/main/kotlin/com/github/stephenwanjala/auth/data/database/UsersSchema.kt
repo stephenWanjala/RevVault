@@ -60,6 +60,22 @@ class UserService(private val database: Database) {
         }
     }
 
+    suspend fun readByEmail(email: String): User? {
+        return dbQuery {
+            Users.select { Users.email eq email }
+                .map { Users.toUser(it) }
+                .singleOrNull()
+        }
+    }
+
+    suspend fun readByUserName(userName: String): User? {
+        return dbQuery {
+            Users.select { Users.userName eq userName }
+                .map { Users.toUser(it) }
+                .singleOrNull()
+        }
+    }
+
     suspend fun update(id: Int, user: User) {
         dbQuery {
             Users.update({ Users.id eq id }) {
