@@ -11,5 +11,5 @@ data class User(
     val fullName: String? = null,
     val phoneNumber: String?=null,
     val salt: String,
-    val id:Int,
+    val id:Int=0,
 )

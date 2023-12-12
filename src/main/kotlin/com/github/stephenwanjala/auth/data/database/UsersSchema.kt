@@ -1,6 +1,8 @@
 package com.github.stephenwanjala.auth.data.database
 
 import com.github.stephenwanjala.auth.domain.model.User
+import com.github.stephenwanjala.auth.security.hashing.HashingService
+import com.github.stephenwanjala.auth.security.hashing.SHA256HashingService
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
