@@ -12,6 +12,7 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    val userService = configureDatabases()
     val tokenConfig = TokenConfig(
         issuer = environment.config.property("jwt.issuer").getString(),
         audience = environment.config.property("jwt.audience").getString(),
@@ -20,12 +21,10 @@ fun Application.module() {
     )
     val hashingService = SHA256HashingService()
     val tokenService = JwtTokenService()
-//    val authRepository = AuthRepositoryImpl(userService)
     configureSecurity(config = tokenConfig)
     configureSerialization()
     configureMonitoring()
     configureHTTP()
-    val userService = configureDatabases()
     configureRouting(
         hashingService = hashingService,
         tokenConfig = tokenConfig,
