@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.*
 
 
-class UserService(private val database: Database) {
+class UserService(private val database: Database): DatabaseService {
     object Users : Table() {
         val userName: Column<String> = varchar("username", 50).uniqueIndex()
         val password: Column<String> = varchar("password", 255)
@@ -39,10 +39,6 @@ class UserService(private val database: Database) {
             SchemaUtils.create(Users)
         }
     }
-
-    suspend fun <T> dbQuery(block: suspend () -> T): T =
-        newSuspendedTransaction(Dispatchers.IO) { block() }
-
     suspend fun create(user: User): Int = dbQuery {
         Users.insert {
             it[userName] = user.userName
