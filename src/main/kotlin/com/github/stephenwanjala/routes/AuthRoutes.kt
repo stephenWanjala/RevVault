@@ -33,7 +33,7 @@ fun Route.signUp(hashingService: HashingService, authRepository: AuthRepository)
             return@post
         }
 
-        // check if user exists
+
         // check if user exists
         val userExist = authRepository.findUserByEmail(request.authInfo.email)
         if (userExist != null) {

@@ -5,9 +5,10 @@ import com.github.stephenwanjala.auth.domain.model.RevFile
 import com.github.stephenwanjala.auth.domain.model.Subject
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.transaction
 
 class FilesService(
-    private val database: Database
+    database: Database
 ) {
     object Files : Table() {
         val fileName: Column<String> = varchar("file_name", 50).uniqueIndex()
@@ -28,11 +29,14 @@ class FilesService(
     }
 
     init {
-        SchemaUtils.apply {
-            create(Files)
-            create(Subjects)
-            create(PastPapers)
-        }
+       transaction(database) {
+                SchemaUtils.apply {
+                    create(Files)
+                    create(Subjects)
+                    create(PastPapers)
+                    create(PracticeQuestions)
+                }
+            }
 
     }
 

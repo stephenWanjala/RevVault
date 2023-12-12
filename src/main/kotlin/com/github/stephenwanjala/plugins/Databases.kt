@@ -1,5 +1,7 @@
 package com.github.stephenwanjala.plugins
 
+import com.github.stephenwanjala.auth.data.database.DatabaseSchemas
+import com.github.stephenwanjala.auth.data.database.FilesService
 import com.github.stephenwanjala.auth.data.database.UserService
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -10,7 +12,7 @@ import java.sql.*
 import kotlinx.coroutines.*
 import org.jetbrains.exposed.sql.*
 
-fun Application.configureDatabases(): UserService {
+fun Application.configureDatabases(): DatabaseSchemas {
     val database = Database.connect(
         url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
         user = "root",
@@ -18,7 +20,10 @@ fun Application.configureDatabases(): UserService {
         password = ""
     )
     val dbConnection: Connection = connectToPostgres(embedded = true)
-    return UserService(database)
+    return DatabaseSchemas(
+        userService = UserService(database),
+        filesService = FilesService(database)
+    )
 }
 
 /**
