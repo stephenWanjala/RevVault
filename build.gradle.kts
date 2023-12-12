@@ -48,10 +48,9 @@ dependencies {
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 
-//    implementation("org.litote.kmongo:kmongo:$kmongoVersion")
-//    implementation("org.litote.kmongo:kmongo-coroutine:$kmongoVersion")
-
     implementation("commons-codec:commons-codec:$commonsCodecVersion")
+
+    implementation("io.github.jan-tennert.supabase:storage-kt:2.0.0")
 
     implementation("io.github.jan-tennert.supabase:storage-kt:2.0.0")
 
