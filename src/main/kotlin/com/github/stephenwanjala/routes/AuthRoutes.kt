@@ -1,5 +1,8 @@
 package com.github.stephenwanjala.routes
 
+import com.auth0.jwt.JWT
+import com.github.stephenwanjala.auth.data.database.UserService
+import com.github.stephenwanjala.auth.domain.model.DbToken
 import com.github.stephenwanjala.auth.domain.model.User
 import com.github.stephenwanjala.auth.domain.repository.AuthRepository
 import com.github.stephenwanjala.auth.domain.responses.LoginRequest
@@ -16,6 +19,9 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.jetbrains.exposed.sql.insertAndGetId
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Route.signUp(hashingService: HashingService, authRepository: AuthRepository) {
 
@@ -45,7 +51,9 @@ fun Route.signUp(hashingService: HashingService, authRepository: AuthRepository)
             userName = request.authInfo.userName,
             email = request.authInfo.email,
             password = saltedHash.hash,
-            salt = saltedHash.salt
+            salt = saltedHash.salt,
+            phoneNumber = request.phoneNumber,
+            fullName = request.fullName
         )
         val userId = authRepository.signUp(user)
         if (userId > 0) {
@@ -61,7 +69,7 @@ fun Route.signUp(hashingService: HashingService, authRepository: AuthRepository)
 fun Route.signIn(
     hashingService: HashingService, repository: AuthRepository, config: TokenConfig, tokenService: TokenService
 ) {
-    post("signin") {
+    post("/signin") {
         val request = call.receiveNullable<LoginRequest>() ?: kotlin.run {
             call.respond(HttpStatusCode.Conflict)
             return@post
@@ -85,7 +93,15 @@ fun Route.signIn(
             return@post
         }
 
-        val token = tokenService.generateToken(
+        println("Checking Token")
+        val existingToken = repository.findTokenByUserId(user.id)
+        existingToken?.let { token->
+            call.respond(HttpStatusCode.OK, LoginResponse(token = token))
+            return@post
+        }
+
+        println("Creating Token")
+        val newToken = tokenService.generateToken(
             config = config,
             TokenClaim(
                 name = "userId", value = user.id.toString()
@@ -93,8 +109,18 @@ fun Route.signIn(
             TokenClaim(name = "userName", value = user.userName),
             TokenClaim(name = "email", value = user.email),
         )
-        call.respond(HttpStatusCode.OK, LoginResponse(token = token))
+        println("New Token: $newToken")
+        try {
+           val tokenId= repository.saveToken(DbToken(userId = user.id, token = newToken))
+            println("Token Id: $tokenId")
+            call.respond(HttpStatusCode.OK, LoginResponse(token = newToken))
+            return@post
+        } catch (e:Exception){
+            call.respond(HttpStatusCode.BadRequest,e.message ?: "Invalid token")
+            return@post
+        }
     }
+
 }
 
 fun Route.authenticate(){
@@ -105,3 +131,26 @@ fun Route.authenticate(){
         }
     }
 }
+
+fun Route.signout(repository: AuthRepository) {
+    authenticate {
+        post("/signout") {
+            val token = call.request.authorization()?.removePrefix("Bearer ")
+            if (token == null) {
+                call.respond(HttpStatusCode.BadRequest, "Invalid token")
+                return@post
+            }
+            try {
+
+                repository.signOut(token.removePrefix("Bearer "))
+            } catch (e: IllegalArgumentException) {
+                call.respond(HttpStatusCode.BadRequest, "Invalid token")
+                return@post
+            }
+
+    }
+}
+}
+
+
+

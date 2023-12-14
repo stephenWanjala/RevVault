@@ -7,6 +7,7 @@ import com.github.stephenwanjala.auth.security.token.TokenService
 import com.github.stephenwanjala.routes.authenticate
 import com.github.stephenwanjala.routes.signIn
 import com.github.stephenwanjala.routes.signUp
+import com.github.stephenwanjala.routes.signout
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.response.*
@@ -30,5 +31,7 @@ fun Application.configureRouting(
             hashingService=hashingService,
             authRepository=authRepository
         )
+
+        signout(repository = authRepository)
     }
 }
