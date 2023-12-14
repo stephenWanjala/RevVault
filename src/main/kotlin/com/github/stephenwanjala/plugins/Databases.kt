@@ -13,13 +13,23 @@ import kotlinx.coroutines.*
 import org.jetbrains.exposed.sql.*
 
 fun Application.configureDatabases(): DatabaseSchemas {
+//    val database = Database.connect(
+//        url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
+//        user = "root",
+//        driver = "org.h2.Driver",
+//        password = ""
+//    )
+    val url = environment.config.property("postgres.url").getString()
+    val user = environment.config.property("postgres.user").getString()
+    val password = environment.config.property("postgres.password").getString()
     val database = Database.connect(
-        url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
-        user = "root",
-        driver = "org.h2.Driver",
-        password = ""
+        url = url,
+        user = user,
+        driver = "org.postgresql.Driver",
+        password = password
     )
-    val dbConnection: Connection = connectToPostgres(embedded = true)
+
+    val dbConnection: Connection = connectToPostgres(embedded = false)
     return DatabaseSchemas(
         userService = UserService(database),
         filesService = FilesService(database)
