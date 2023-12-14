@@ -21,7 +21,10 @@ fun Application.module() {
     )
     val hashingService = SHA256HashingService()
     val tokenService = JwtTokenService()
-    configureSecurity(config = tokenConfig)
+    val authRepository = AuthRepositoryImpl(schemas.userService)
+    configureSecurity(config = tokenConfig,
+        authRepository = authRepository
+        )
     configureSerialization()
     configureMonitoring()
     configureHTTP()
@@ -29,6 +32,6 @@ fun Application.module() {
         hashingService = hashingService,
         tokenConfig = tokenConfig,
         tokenService = tokenService,
-        authRepository = AuthRepositoryImpl(schemas.userService)
+        authRepository = authRepository
     )
 }

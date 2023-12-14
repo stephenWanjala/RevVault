@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import kotlinx.coroutines.Dispatchers
+import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.*
 
 
@@ -37,6 +38,8 @@ class UserService(private val database: Database): DatabaseService {
     init {
         transaction(database) {
             SchemaUtils.create(Users)
+            SchemaUtils.create(Tokens)
+            SchemaUtils.create(BlacklistedTokens)
         }
     }
     suspend fun create(user: User): Int = dbQuery {
@@ -92,4 +95,49 @@ class UserService(private val database: Database): DatabaseService {
             Users.deleteWhere { Users.id.eq(id) }
         }
     }
+
+
+    object Tokens : Table() {
+        val id = integer("id").autoIncrement()
+        val userId =integer("user_id")
+        val token = varchar("token", 300).uniqueIndex()
+    }
+
+    object BlacklistedTokens : Table() {
+        val id = integer("id").autoIncrement()
+        val token = varchar("token", 300)
+    }
+
+    suspend fun createToken(userId: Int, token: String): Int = dbQuery {
+        Tokens.insert {
+            it[Tokens.userId] = userId
+            it[Tokens.token] = token
+        }[Tokens.id]
+    }
+
+
+    suspend fun readToken(id: Int): String? {
+        return dbQuery {
+            Tokens.select { Tokens.id eq id }
+                .map { it[Tokens.token] }
+                .singleOrNull()
+        }
+    }
+
+    suspend fun deleteToken(token: String) {
+        dbQuery {
+            Tokens.deleteWhere { Tokens.token.eq(token) }
+        }
+    }
+
+    suspend fun readTokenByUserId(userId: Int): String? {
+        return dbQuery {
+            Tokens.select { Tokens.userId eq userId }
+                .map { it[Tokens.token] }
+                .singleOrNull()
+        }
+    }
+
+
+
 }
