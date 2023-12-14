@@ -1,0 +1,14 @@
+version: '3'
+services:
+  rev_vault:
+    image: azul/zulu-openjdk:17-latest
+    container_name: rev_vault
+    working_dir: /src
+    volumes:
+      - /tmp
+    ports:
+      - "8080:8080"
+    entrypoint:
+      - java
+      - -jar
+      - /app.jar
