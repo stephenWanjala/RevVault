@@ -38,7 +38,7 @@ jobs:
           echo "export POSTGRES_USER=${{env.POSTGRES_USER}}" >> $GITHUB_ENV
           echo "export POSTGRES_PASSWORD=${{env.POSTGRES_PASSWORD}}" >> $GITHUB_ENV
           echo "export POSTGRES_DB=${{env.POSTGRES_DB}}" >> $GITHUB_ENV
-          echo "export SUPABASE_KEY=${{SUPABASE_KEY}}" >> $GITHUB_ENV
+          echo "export SUPABASE_KEY=${{env.SUPABASE_KEY}}" >> $GITHUB_ENV
           echo "export SUPABASE_URL=${{env.SUPABASE_URL}}" >> $GITHUB_ENV
 
       - name: Print Java version
