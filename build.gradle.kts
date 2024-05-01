@@ -9,9 +9,9 @@ val commonsCodecVersion: String by project
 val kmongoVersion: String by project
 
 plugins {
-    kotlin("jvm") version "1.9.20"
-    id("io.ktor.plugin") version "2.3.6"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.20"
+    kotlin("jvm") version "1.9.23"
+    id("io.ktor.plugin") version "2.3.10"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.23"
 }
 
 group = "com.github.stephenwanjala"
@@ -22,6 +22,21 @@ application {
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
+}
+ktor {
+    docker {
+        jreVersion.set(JavaVersion.VERSION_17)
+        localImageName.set("RevVault-image")
+        imageTag.set("0.0.1-preview")
+
+        externalRegistry.set(
+            io.ktor.plugin.features.DockerImageRegistry.dockerHub(
+                appName = provider { "RevVault" },
+                username = providers.environmentVariable("DOCKER_HUB_USERNAME"),
+                password = providers.environmentVariable("DOCKER_HUB_PASSWORD")
+            )
+        )
+    }
 }
 
 repositories {
@@ -38,6 +53,7 @@ dependencies {
     implementation("io.ktor:ktor-server-call-logging-jvm")
     implementation("io.ktor:ktor-server-compression-jvm")
     implementation("io.ktor:ktor-server-cors-jvm")
+    implementation("io.ktor:ktor-server-status-pages")
     implementation("org.postgresql:postgresql:$postgresVersion")
     implementation("com.h2database:h2:$h2Version")
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
