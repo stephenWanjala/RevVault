@@ -3,7 +3,7 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -12,13 +12,6 @@ jobs:
     env:
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
       DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
 
     steps:
       - name: Checkout code
@@ -38,13 +31,13 @@ jobs:
 
       - name: Set up environment variables
         run: |
-          echo "export JWT_SECRET=${JWT_SECRET}" >> $GITHUB_ENV
-          echo "export POSTGRES_HOST=${POSTGRES_HOST}" >> $GITHUB_ENV
-          echo "export POSTGRES_USER=${POSTGRES_USER}" >> $GITHUB_ENV
-          echo "export POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> $GITHUB_ENV
-          echo "export POSTGRES_DB=${POSTGRES_DB}" >> $GITHUB_ENV
-          echo "export SUPABASE_KEY=${SUPABASE_KEY}" >> $GITHUB_ENV
-          echo "export SUPABASE_URL=${SUPABASE_URL}" >> $GITHUB_ENV
+          echo "export JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
+          echo "export POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> $GITHUB_ENV
+          echo "export POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> $GITHUB_ENV
+          echo "export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
+          echo "export POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> $GITHUB_ENV
+          echo "export SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> $GITHUB_ENV
+          echo "export SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> $GITHUB_ENV
 
       - name: Build and Deploy
         run: |
