@@ -12,6 +12,7 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+
     val schemas = configureDatabases()
     val tokenConfig = TokenConfig(
         issuer = environment.config.property("jwt.issuer").getString(),
@@ -25,8 +26,10 @@ fun Application.module() {
     configureSecurity(config = tokenConfig,
         authRepository = authRepository
         )
+
     configureSerialization()
     configureMonitoring()
+    configureStatusPages()
     configureHTTP()
     configureRouting(
         hashingService = hashingService,
