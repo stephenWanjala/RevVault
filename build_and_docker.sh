@@ -18,4 +18,16 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "Both Ktor project build and Docker image build completed successfully."
+# Step 3: Tag the Docker image
+docker tag rev_vault stephenwanjala/rev_vault:latest
+
+# Step 4: Push the Docker image to Docker Hub
+docker push stephenwanjala/rev_vault:latest
+
+# Check if the Docker image push was successful
+if [ $? -ne 0 ]; then
+    echo "Docker image push failed."
+    exit 1
+fi
+
+echo "Ktor project build, Docker image build, and Docker image push completed successfully."
