@@ -23,7 +23,7 @@ COPY src /app/src
 RUN ./gradlew build -x test --no-daemon
 
 # Use a lightweight JRE image for the final image
-FROM adoptopenjdk:17-jre-hotspot
+FROM openjdk:17-jre
 
 # Set the working directory
 WORKDIR /app
