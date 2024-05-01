@@ -143,6 +143,7 @@ fun Route.signout(repository: AuthRepository) {
             try {
 
                 repository.signOut(token.removePrefix("Bearer "))
+                call.respond(HttpStatusCode.NoContent, "Sign out successful")
             } catch (e: IllegalArgumentException) {
                 call.respond(HttpStatusCode.BadRequest, "Invalid token")
                 return@post
