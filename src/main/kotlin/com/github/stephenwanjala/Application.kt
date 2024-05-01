@@ -13,7 +13,13 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
 
-    val schemas = configureDatabases()
+    val POSTGRES_HOST = System.getenv("POSTGRES_HOST")
+    val POSTGRES_PORT = System.getenv("POSTGRES_PORT") ?: "5432"
+    val POSTGRES_DB = System.getenv("POSTGRES_DB")
+    val POSTGRES_USER = System.getenv("POSTGRES_USER")
+    val POSTGRES_PASSWORD = System.getenv("POSTGRES_PASSWORD")
+    val POSTGRES_URL = "jdbc:postgresql://$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB"
+    val schemas = configureDatabases(db_url=POSTGRES_URL, db_user=POSTGRES_USER, db_password=POSTGRES_PASSWORD)
     val tokenConfig = TokenConfig(
         issuer = environment.config.property("jwt.issuer").getString(),
         audience = environment.config.property("jwt.audience").getString(),

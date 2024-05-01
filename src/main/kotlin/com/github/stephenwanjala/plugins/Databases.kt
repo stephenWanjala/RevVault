@@ -12,16 +12,16 @@ import java.sql.*
 import kotlinx.coroutines.*
 import org.jetbrains.exposed.sql.*
 
-fun Application.configureDatabases(): DatabaseSchemas {
+fun Application.configureDatabases(db_user: String, db_url: String, db_password: String): DatabaseSchemas {
 //    val database = Database.connect(
 //        url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
 //        user = "root",
 //        driver = "org.h2.Driver",
 //        password = ""
 //    )
-    val url = environment.config.property("postgres.url").getString()
-    val user = environment.config.property("postgres.user").getString()
-    val password = environment.config.property("postgres.password").getString()
+    val url = db_url
+    val user = db_user
+    val password = db_password
     val database = Database.connect(
         url = url,
         user = user,
@@ -29,7 +29,7 @@ fun Application.configureDatabases(): DatabaseSchemas {
         password = password
     )
 
-    val dbConnection: Connection = connectToPostgres(embedded = false)
+//    val dbConnection: Connection = connectToPostgres(embedded = false)
     return DatabaseSchemas(
         userService = UserService(database),
         filesService = FilesService(database)
@@ -57,15 +57,15 @@ fun Application.configureDatabases(): DatabaseSchemas {
  * @return [Connection] that represent connection to the database. Please, don't forget to close this connection when
  * your application shuts down by calling [Connection.close]
  * */
-fun Application.connectToPostgres(embedded: Boolean): Connection {
-    Class.forName("org.postgresql.Driver")
-    return if (embedded) {
-        DriverManager.getConnection("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", "root", "")
-    } else {
-        val url = environment.config.property("postgres.url").getString()
-        val user = environment.config.property("postgres.user").getString()
-        val password = environment.config.property("postgres.password").getString()
-
-        DriverManager.getConnection(url, user, password)
-    }
-}
+//fun Application.connectToPostgres(embedded: Boolean): Connection {
+//    Class.forName("org.postgresql.Driver")
+//    return if (embedded) {
+//        DriverManager.getConnection("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", "root", "")
+//    } else {
+//        val url = environment.config.property("postgres.url").getString()
+//        val user = environment.config.property("postgres.user").getString()
+//        val password = environment.config.property("postgres.password").getString()
+//
+//        DriverManager.getConnection(url, user, password)
+//    }
+//}
