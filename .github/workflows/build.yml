@@ -9,11 +9,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up JDK
+      - name: Set up JDK 21
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
@@ -21,19 +22,21 @@ jobs:
 
       - name: Set up environment variables
         run: |
-          echo "export JWT_SECRET=${{env.JWT_SECRET}}" >> $GITHUB_ENV
-          echo "export POSTGRES_HOST=${{env.POSTGRES_HOST}}" >> $GITHUB_ENV
-          echo "export POSTGRES_USER=${{env.POSTGRES_USER}}" >> $GITHUB_ENV
-          echo "export POSTGRES_PASSWORD=${{env.POSTGRES_PASSWORD}}" >> $GITHUB_ENV
-          echo "export POSTGRES_DB=${{env.POSTGRES_DB}}" >> $GITHUB_ENV
-          echo "export SUPABASE_KEY=${{env.SUPABASE_KEY}}" >> $GITHUB_ENV
-          echo "export SUPABASE_URL=${{env.SUPABASE_URL}}" >> $GITHUB_ENV
+          echo "export JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
+          echo "export POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> $GITHUB_ENV
+          echo "export POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> $GITHUB_ENV
+          echo "export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
+          echo "export POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> $GITHUB_ENV
+          echo "export SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> $GITHUB_ENV
+          echo "export SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> $GITHUB_ENV
+          echo "export DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}" >> $GITHUB_ENV
+          echo "export DOCKER_HUB_PASSWORD=${{ secrets.DOCKER_HUB_PASSWORD }}" >> $GITHUB_ENV
 
       - name: Print Java version
         run: java -version
 
       - name: Log in to Docker Hub
-        run: echo "${{env.DOCKER_HUB_PASSWORD}}" | docker login -u "${{env.DOCKER_HUB_USERNAME}}" --password-stdin
+        run: echo "${{ env.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ env.DOCKER_HUB_USERNAME }}" --password-stdin
 
       - name: Build and Deploy
         run: |
