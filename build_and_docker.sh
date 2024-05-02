@@ -21,7 +21,7 @@ fi
 # Step 3: Tag the Docker image
 docker tag rev_vault stephenwanjala/rev_vault:latest
 # for gcloud
-docker tag stephenwanjala/rev_vault:latest northamerica-northeast1-docker.pkg.dev/revvault/revvault/rev_vault:latest
+#docker tag stephenwanjala/rev_vault:latest northamerica-northeast1-docker.pkg.dev/revvault/revvault/rev_vault:latest
 
 # Step 4: Push the Docker image to Docker Hub
 docker push stephenwanjala/rev_vault:latest
