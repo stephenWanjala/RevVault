@@ -6,10 +6,15 @@ import com.github.stephenwanjala.auth.security.token.JwtTokenService
 import com.github.stephenwanjala.auth.security.token.TokenConfig
 import com.github.stephenwanjala.plugins.*
 import io.ktor.server.application.*
+import kotlinx.coroutines.sync.Mutex
+import java.util.concurrent.ConcurrentHashMap
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
+
+val rateLimiters = ConcurrentHashMap<String, RateLimit>()
+val mutex = Mutex()
 
 fun Application.module() {
 
@@ -37,6 +42,7 @@ fun Application.module() {
     configureMonitoring()
     configureStatusPages()
     configureHTTP()
+    rateLimitingModule()
     configureRouting(
         hashingService = hashingService,
         tokenConfig = tokenConfig,
