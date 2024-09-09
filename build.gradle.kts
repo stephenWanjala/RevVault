@@ -66,9 +66,9 @@ dependencies {
 
     implementation("commons-codec:commons-codec:$commonsCodecVersion")
 
-    implementation("io.github.jan-tennert.supabase:storage-kt:2.6.0-wasm0")
+    implementation("io.github.jan-tennert.supabase:storage-kt:2.6.1")
 
-    implementation("io.github.jan-tennert.supabase:storage-kt:2.6.0-wasm0")
+    implementation("io.github.jan-tennert.supabase:storage-kt:2.6.1")
 
 }
 java {
