@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 val ktorVersion: String by project
 val kotlinVersion: String by project
 val logbackVersion: String by project
@@ -84,6 +86,8 @@ tasks.withType<JavaCompile> {
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class) {
-    kotlinOptions.jvmTarget = "21"
+    compilerOptions{
+        jvmTarget.set(JvmTarget.JVM_21)
+    }
 }
 
