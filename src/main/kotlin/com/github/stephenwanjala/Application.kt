@@ -24,7 +24,7 @@ fun Application.module() {
     val POSTGRES_USER = System.getenv("POSTGRES_USER")
     val POSTGRES_PASSWORD = System.getenv("POSTGRES_PASSWORD")
     val POSTGRES_URL = "jdbc:postgresql://$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB"
-    val schemas = configureDatabases(db_url=POSTGRES_URL, db_user=POSTGRES_USER, db_password=POSTGRES_PASSWORD)
+    val schemas = configureDatabases(db_url = POSTGRES_URL, db_user = POSTGRES_USER, db_password = POSTGRES_PASSWORD)
     val tokenConfig = TokenConfig(
         issuer = environment.config.property("jwt.issuer").getString(),
         audience = environment.config.property("jwt.audience").getString(),
@@ -34,9 +34,10 @@ fun Application.module() {
     val hashingService = SHA256HashingService()
     val tokenService = JwtTokenService()
     val authRepository = AuthRepositoryImpl(schemas.userService)
-    configureSecurity(config = tokenConfig,
+    configureSecurity(
+        config = tokenConfig,
         authRepository = authRepository
-        )
+    )
 
     configureSerialization()
     configureMonitoring()
